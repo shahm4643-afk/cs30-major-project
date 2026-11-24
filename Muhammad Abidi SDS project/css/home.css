@@ -1,0 +1,993 @@
+@import url("https://fonts.googleapis.com/css2?family=Explora&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Explora&family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&display=swap");
+
+:root {
+  /* Team Colors */
+  --ferrari-red: #e8002d;
+  --ferrari-yellow: #f5c518;
+  --mercedes-teal: #00d2be;
+  --mercedes-dark: #00413b;
+  --mclaren-orange: #ff8000;
+  --mclaren-dark: #1a0a00;
+  --redbull-blue: #033157;
+  --redbull-navy: #03073b;
+  --redbull-red: #e8002d;
+
+  /* Shared */
+  --white: #ffffff;
+  --off-white: #eeecec;
+  --black: #000000;
+  --gold: #ffc906;
+
+  /* Nav */
+  --nav-height: 80px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- Navigation Base Styles --- */
+.nav-colorbar {
+  display: flex;
+  width: 100%;
+  height: 4px;
+}
+.nav-colorbar span {
+  flex: 1;
+  height: 100%;
+}
+.nc-ferrari {
+  background-color: #e60000;
+}
+.nc-mercedes {
+  background-color: #27f4d2;
+}
+.nc-mclaren {
+  background-color: #ff8700;
+}
+.nc-redbull {
+  background-color: #3671c6;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  background-color: #111;
+  position: relative;
+  z-index: 10; /* Keeps navigation clickable and above the 3D animations */
+}
+.nav-logo img {
+  width: 120px;
+  height: auto;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+nav ul li a {
+  color: #eee;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+nav ul li a:hover,
+nav ul li a.active {
+  color: #e60000;
+}
+
+body {
+  margin: 0;
+  font-size: 16px;
+  background-color: #000000;
+  font-family: Poppins;
+  color: #ffffff;
+}
+
+/* --- 3D Slider Section Styles --- */
+.banner {
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #000000; 
+}
+
+/* 3D Space Container */
+.banner .slider {
+  position: absolute;
+  width: 300px;
+  height: 120px;
+  top: 15%; 
+  left: 50%;
+  transform: translateX(-50%) perspective(1000px);
+  transform-style: preserve-3d;
+  animation: autoRun 20s linear infinite;
+  z-index: 0;
+}
+
+/*infinite Rotation Keyframe Animation */
+@keyframes autoRun {
+  from {
+    transform: translateX(-50%) perspective(1000px) rotateX(-16deg)
+      rotateY(0deg);
+  }
+  to {
+    transform: translateX(-50%) perspective(1000px) rotateX(-16deg)
+      rotateY(360deg);
+  }
+}
+
+
+.banner .slider .item {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(calc((var(--position) - 1) * (360deg / var(--quantity))))
+  translateZ(550px);
+  z-index: -1; 
+}
+
+.banner .slider .item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(126, 126, 126, 0.5);
+}
+
+/* Layout Content Text Styles */
+.banner .content {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  height: max-content;
+  padding-bottom: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 300px;
+}
+
+.banner .content h1 {
+  padding: 0;
+  font-family: "ICA Rubrik";
+  background-color: transparent;
+  font-size: 10rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1em;
+  margin-left: 10px;
+  position: relative;
+  letter-spacing: 10px;
+}
+
+.banner .content h1::after {
+  position: absolute;
+  inset: 0 0 0 0;
+  content: attr(data-content);
+  -webkit-text-stroke: 2px #ffffff;
+  color: transparent;
+  z-index: 2;
+}
+
+.banner .content .author {
+  font-family: "Poppins";
+  max-width: 200px;
+  text-align: right;
+}
+
+.banner .content .author h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: Poppins;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.banner .content .model {
+  background-image: url("../images/home/check.png");
+  width: 100%;
+
+  height: 160vh;
+
+  position: absolute;
+  left: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+
+  pointer-events: none;
+  z-index: 1;
+  margin-bottom: 50px;
+}
+
+/* What is F1 and F1 vocab */
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  background-color: var(black);
+  color: var(--white);
+}
+
+.wif1-section {
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+}
+
+.wif1-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--white);
+}
+
+
+.wif1-title {
+  font-family: "ICA Rubrik";
+  font-size: 60px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 24px;
+  line-height: 1.1;
+}
+
+.wif1-title span {
+  color: var(--white);
+}
+
+.wif1-body {
+  font-family: "Futura", "Poppins", Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--off-white);
+  margin-bottom: 14px;
+}
+
+.wif1-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(168, 34, 34, 0.12);
+}
+
+.wif1-stat .num {
+  font-family: "ICA Rubrik";
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--white);
+}
+
+.wif1-stat .lbl {
+  font-family: "ICA Rubrik";
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  color: rgb(255, 0, 0);
+}
+
+.wif1-visual {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.wif1-card {
+  background: linear-gradient(135deg, #1789e6, #e25b5b);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 22px 20px;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.wif1-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(104, 166, 224, 0.35);
+}
+
+.wif1-card.wide {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.wif1-card-icon {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.wif1-card.wide .wif1-card-icon {
+  margin-bottom: 0;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.wif1-card-label {
+  font-family: "ICA Rubrik";
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(0, 40, 56);
+  margin-bottom: 6px;
+}
+
+.wif1-card-val {
+  font-family: "ICA Rubrik";
+  font-size: 1.45rem;
+  color: var(--white);
+  line-height: 1.1;
+}
+
+.f1-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(232, 0, 45, 0.5) 40%, rgba(232, 0, 45, 0.5) 60%, transparent);
+  margin: 0;
+}
+
+.vocab-section {
+  padding: 80px 0 90px;
+  overflow: hidden;
+}
+
+.vocab-header {
+  text-align: center;
+  padding: 0 24px;
+  margin-bottom: 52px;
+}
+
+.vocab-title {
+  font-family: "ICA Rubrik";
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 14px;
+  background-color: transparent;
+}
+
+.vocab-sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.45);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.marquee-outer {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+}
+
+.marquee-outer::before,
+.marquee-outer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 140px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee-outer::before {
+  left: 0;
+  background: linear-gradient(to right, var(--redbull-blue), transparent);
+}
+
+.marquee-outer::after {
+  right: 0;
+  background: linear-gradient(to left, var(--redbull-blue), transparent);
+}
+
+/* ── Scrolling track ── */
+.marquee-track {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+}
+
+.marquee-track-1 {
+  animation: scroll-fwd 55s linear infinite;
+}
+.marquee-track-2 {
+  animation: scroll-rev 62s linear infinite;
+}
+
+@keyframes scroll-fwd {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-rev {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.vocab-card {
+  background: linear-gradient(135deg, #1789e6, #e25b5b);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 20px 22px 18px;
+  min-width: 268px;
+  max-width: 300px;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.vocab-card:hover {
+  border-color: rgba(104, 166, 224, 0.4);
+  box-shadow: 0 14px 32px rgba(104, 166, 224, 0.2);
+}
+
+.vocab-card-term {
+  font-family: "ICA Rubrik";
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 9px;
+}
+
+.vocab-card-def {
+  font-family: "poppins", Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgb(0, 0, 0);
+  font-weight: 700;
+}
+
+@media (max-width: 860px) {
+  .wif1-section {
+    flex-direction: column;
+    gap: 48px;
+    margin: 60px auto;
+  }
+  .wif1-visual {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .wif1-visual {
+    grid-template-columns: 1fr;
+  }
+  .wif1-card.wide {
+    grid-column: span 1;
+  }
+}
+
+/* Constructors' championship section */
+.champ-section {
+  padding: 20px 0 80px;
+}
+
+.champ-section h1 {
+  font-family: "ICA Rubrik";
+  font-size: 40px;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 10px;
+  color: #fff;
+  padding: 20px 32px;
+  margin: 0 auto 12px;
+  max-width: 700px;
+}
+.champ-section {
+  padding: 20px 0 80px;
+}
+
+.champ-sub {
+  text-align: center;
+  font-family: "ICA Rubrik";
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: -24px;
+  margin-bottom: 40px;
+}
+
+.champ-sub span {
+  color: #e8002d;
+}
+
+.champ-table {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.champ-table-head {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px;
+  padding: 0 20px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 6px;
+}
+
+.champ-table-head span {
+  font-family: "ICA Rubrik";
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.champ-table-head .h-pts {
+  text-align: right;
+}
+
+.champ-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px;
+  align-items: center;
+  padding: 13px 20px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  border-left: 3px solid var(--c, rgba(255, 255, 255, 0.1));
+}
+
+.champ-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(3px);
+}
+
+.champ-pos {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1;
+}
+
+.champ-row.top .champ-pos {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.champ-team {
+  font-family: "ICA Rubrik";
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.champ-pts {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.5rem;
+  color: #fff;
+  text-align: right;
+  line-height: 1;
+}
+
+.champ-footer-note {
+  max-width: 700px;
+  margin: 14px auto 0;
+  padding: 0 20px;
+  font-family: "ICA Rubrik";
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+}
+/* F1 circuits */
+.circuits {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #000;
+}
+
+.circuits h1 {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+
+  font-family: "ICA Rubrik";
+  font-size: 42px;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  color: #fff;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 16px 32px;
+  margin: 0;
+}
+
+.circuits .list {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.circuits .list .item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 0;
+}
+
+.circuits .list .item:nth-child(1) {
+  opacity: 1;
+  z-index: 1;
+}
+
+.circuits .list .item img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.circuits .list .item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.65) 35%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  z-index: 1;
+}
+
+.circuits .list .item .content {
+  position: absolute;
+  top: 52%;
+  left: 5%;
+  transform: translateY(-50%);
+  width: min(800px, 60vw);
+  padding: 48px;
+  border-radius: 50px;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+  color: white;
+  z-index: 2;
+}
+
+.circuits .list .item .content .title {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #e8002d;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.circuits .list .item .content .topic {
+  font-family: "ICA Rubrik";
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin-bottom: 18px;
+}
+
+.circuits .list .item .content .des {
+  font-family: "Poppins", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.circuits .list .item .content .button {
+  margin-top: 24px;
+}
+
+.circuits .list .item .content button {
+  height: 42px;
+  padding: 0 24px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: "Barlow Condensed", sans-serif;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.circuits .list .item .content button:hover {
+  background: #e8002d;
+  border-color: #e8002d;
+  transform: translateY(-2px);
+}
+
+/* thumbnails */
+.thumbnail {
+  position: absolute;
+  bottom: 38px;
+  right: 5%;
+  left: auto;
+  z-index: 10;
+
+  display: flex;
+  gap: 16px;
+  width: max-content;
+}
+
+.thumbnail .item {
+  width: 120px;
+  height: 170px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55);
+}
+
+.thumbnail .item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail .item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent 65%);
+}
+
+.thumbnail .item .content {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 10px;
+  z-index: 2;
+}
+
+.thumbnail .item .content .title {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+}
+
+.thumbnail .item .content .des {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* arrows */
+.arrows {
+  position: absolute;
+  bottom: 235px;
+  right: 5%;
+  left: auto;
+  z-index: 20;
+
+  display: flex;
+  gap: 12px;
+}
+
+.arrows button {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.arrows button:hover {
+  background: #e8002d;
+  border-color: #e8002d;
+  transform: scale(1.08);
+}
+
+/* animations */
+.circuits .list .item:nth-child(1) .des,
+.circuits .list .item:nth-child(1) .title,
+.circuits .list .item:nth-child(1) .topic,
+.circuits .list .item:nth-child(1) .button {
+  transform: translateY(35px);
+  filter: blur(15px);
+  opacity: 0;
+  animation: showContent 0.6s ease forwards;
+}
+
+.circuits .list .item:nth-child(1) .title {
+  animation-delay: 0.4s;
+}
+.circuits .list .item:nth-child(1) .topic {
+  animation-delay: 0.55s;
+}
+.circuits .list .item:nth-child(1) .des {
+  animation-delay: 0.7s;
+}
+.circuits .list .item:nth-child(1) .button {
+  animation-delay: 0.85s;
+}
+
+@keyframes showContent {
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.circuits.next .list .item:nth-child(1) img {
+  width: 120px;
+  height: 170px;
+  position: absolute;
+  right: 5%;
+  bottom: 38px;
+  border-radius: 16px;
+  animation: showImage 0.55s ease forwards;
+}
+
+@keyframes showImage {
+  to {
+    width: 100%;
+    height: 100%;
+    right: 0;
+    bottom: 0;
+    border-radius: 0;
+  }
+}
+
+.circuits.next .thumbnail .item:nth-last-child(1) {
+  width: 0;
+  overflow: hidden;
+  animation: showThumbnail 0.55s ease forwards;
+}
+
+@keyframes showThumbnail {
+  to {
+    width: 120px;
+  }
+}
+
+.circuits.next .thumbnail {
+  transform: translateX(120px);
+  animation: transformThumbnail 0.55s ease forwards;
+}
+
+@keyframes transformThumbnail {
+  to {
+    transform: translateX(0);
+  }
+}
+
+.circuits.prev .list .item:nth-child(1) {
+  z-index: 2;
+}
+
+.circuits.prev .list .item:nth-child(1) img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  animation: outImage 0.55s ease forwards;
+}
+
+@keyframes outImage {
+  to {
+    width: 120px;
+    height: 170px;
+    border-radius: 16px;
+    right: 5%;
+    bottom: 38px;
+  }
+}
+
+.circuits.prev .thumbnail .item:nth-child(1) {
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation: showThumbnail 0.55s ease forwards;
+}
+
+.circuits.prev .list .item:nth-child(2) .title,
+.circuits.prev .list .item:nth-child(2) .topic,
+.circuits.prev .list .item:nth-child(2) .des,
+.circuits.prev .list .item:nth-child(2) .button {
+  animation: contentOut 0.8s ease forwards;
+}
+
+@keyframes contentOut {
+  to {
+    transform: translateY(-80px);
+    filter: blur(15px);
+    opacity: 0;
+  }
+}
+
+.circuits.next .arrows button,
+.circuits.prev .arrows button {
+  pointer-events: none;
+}
+
+.time {
+  width: 0%;
+  height: 4px;
+  background: #e8002d;
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  left: 0;
+}
+
+.circuits.next .time,
+.circuits.prev .time {
+  width: 100%;
+  animation: timeRunning 1.5s linear forwards;
+}
+
+@keyframes timeRunning {
+  to {
+    width: 0;
+  }
+}
