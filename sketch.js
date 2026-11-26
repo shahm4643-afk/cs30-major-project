@@ -29,7 +29,7 @@ let restartX, restartY;
 // Starting positions (grid coordinates)
 let rbFinishLine = { x: 124, y: 50 };
 let sfFinishLine = { x: 124, y: 53 };
-let monacoRbStart = { x: 0, y: 0 }; // TODO: fill in with an open road tile on Monaco
+let monacoRbStart = { x: 132, y: 375 }; // TODO: fill in with an open road tile on Monaco
 let monacoSfStart = { x: 0, y: 0 }; // TODO: fill in with an open road tile on Monaco
 
 // Cars' images and Physics
@@ -166,8 +166,30 @@ function startCircuit(circuit, rbLine, sfLine, startScale) {
 
   grid = structuredClone(circuit);
 
-  rows = grid.length;
-  cols = grid[0].length;
+// Add extra space to Monaco only
+if (circuit === deMonaco) {
+
+  // Add 60 empty columns to the right
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < 60; x++) {
+      grid[y].push(OPEN_TILE);
+    }
+  }
+
+  // Add 70 empty rows to the TOP
+  for (let y = 0; y < 70; y++) {
+    grid.unshift(Array(grid[0].length).fill(OPEN_TILE));
+  }
+
+  // Add 30 empty rows to the BOTTOM
+  for (let y = 0; y < 30; y++) {
+    grid.push(Array(grid[0].length).fill(OPEN_TILE));
+  }
+}
+
+// Update dimensions
+rows = grid.length;
+cols = grid[0].length;
 
   // Red Bull starting position
   rbCarX = rbLine.x * CELL_SIZE;
@@ -192,7 +214,9 @@ function startCircuit(circuit, rbLine, sfLine, startScale) {
 
   circuitScale = startScale;
 
+  // Centre after expanding the grid
   centerCircuit();
+
   gameState = "playing";
 }
 
@@ -204,25 +228,32 @@ function displayGrid() {
   translate(circuitOffsetX, circuitOffsetY);
   scale(circuitScale);
 
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
+for (let y = 0; y < rows; y++) {
+  for (let x = 0; x < cols; x++) {
 
-      if (grid[y][x] === IMPASSABLE) {
-        fill("black");
-        square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
-      }
-
-      else if (grid[y][x] === FINISH_LINE) {
-        fill("white");
-        square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
-      }
-
-      else if (grid[y][x] === DARK_FINISH) {
-        fill(51, 51, 51);
-        square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
-      }
+    if (grid[y][x] === IMPASSABLE) {
+      fill("black");
     }
+    else if (grid[y][x] === FINISH_LINE) {
+      fill("white");
+    }
+    else if (grid[y][x] === DARK_FINISH) {
+      fill(51, 51, 51);
+    }
+    else {
+      fill(220);
+    }
+
+    if (gameState === "editing") {
+      stroke(160);
+      strokeWeight(0.5);
+    } else {
+      noStroke();
+    }
+
+    square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
   }
+}
 
   pop();
 
@@ -254,6 +285,33 @@ function displayGrid() {
     imageMode(CORNER);
     rectMode(CORNER);
   }
+}
+
+function expandCircuit(circuit) {
+  let newGrid = structuredClone(circuit);
+
+  let screenCols = Math.floor(width / CELL_SIZE);
+  let screenRows = Math.floor(height / CELL_SIZE);
+
+  // Find the required number of columns
+  let targetCols = Math.max(
+    screenCols,
+    ...newGrid.map(row => row.length)
+  );
+
+  // Expand every existing row
+  for (let y = 0; y < newGrid.length; y++) {
+    while (newGrid[y].length < targetCols) {
+      newGrid[y].push(OPEN_TILE);
+    }
+  }
+
+  // Add rows if needed
+  while (newGrid.length < screenRows) {
+    newGrid.push(Array(targetCols).fill(OPEN_TILE));
+  }
+
+  return newGrid;
 }
 
 function checkCrash() {
@@ -511,6 +569,7 @@ function mousePressed() {
       circuitShiftX = 0;
       circuitShiftY = 0;
       startCircuit(yasMarina, rbFinishLine, sfFinishLine, yasScale);
+      // gameState = "editing";
     }
 
     else if (isMouseOver(buttonX, buttonY + 100, buttonW, buttonH)) {
@@ -520,9 +579,10 @@ function mousePressed() {
     }
 
     else if (isMouseOver(buttonX, buttonY + 200, buttonW, buttonH)) {
-      circuitShiftX = -250;
-      circuitShiftY = 140;
+      circuitShiftX = 0;
+      circuitShiftY = 52;
       startCircuit(deMonaco, monacoRbStart, monacoSfStart, monacoScale);
+      // gameState = "editing";
     }
   }
 
