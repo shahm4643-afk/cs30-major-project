@@ -195,7 +195,7 @@ function draw() {
 function startCircuit(circuit, rbLine, sfLine, startScale, openEditor = false) {
   currentCircuit = circuit;
 
-    if (circuit === yasMarina) {
+  if (circuit === yasMarina) {
     selectPalette("yasMarina");
   }
 
@@ -209,26 +209,26 @@ function startCircuit(circuit, rbLine, sfLine, startScale, openEditor = false) {
 
   grid = structuredClone(circuit);
 
-// Add extra space to Monaco only
-if (circuit === deMonaco) {
+  // Add extra space to Monaco only
+  if (circuit === deMonaco) {
 
-  // Add 60 empty columns to the right
-  for (let y = 0; y < grid.length; y++) {
-    for (let x = 0; x < 60; x++) {
-      grid[y].push(OPEN_TILE);
+    // Add 60 empty columns to the right
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < 60; x++) {
+        grid[y].push(OPEN_TILE);
+      }
+    }
+
+    // Add 70 empty rows to the TOP
+    for (let y = 0; y < 70; y++) {
+      grid.unshift(Array(grid[0].length).fill(OPEN_TILE));
+    }
+
+    // Add 30 empty rows to the BOTTOM
+    for (let y = 0; y < 30; y++) {
+      grid.push(Array(grid[0].length).fill(OPEN_TILE));
     }
   }
-
-  // Add 70 empty rows to the TOP
-  for (let y = 0; y < 70; y++) {
-    grid.unshift(Array(grid[0].length).fill(OPEN_TILE));
-  }
-
-  // Add 30 empty rows to the BOTTOM
-  for (let y = 0; y < 30; y++) {
-    grid.push(Array(grid[0].length).fill(OPEN_TILE));
-  }
-}
 
   // Update dimensions
   rows = grid.length;
@@ -271,38 +271,39 @@ function displayGrid() {
   translate(circuitOffsetX, circuitOffsetY);
   scale(circuitScale);
 
-for (let y = 0; y < rows; y++) {
-  for (let x = 0; x < cols; x++) {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
 
-    if (grid[y][x] === KERB_RED) {
-      fill("#E32636");
-    }
-    else if (grid[y][x] === KERB_WHITE) {
-      fill("white");
-    }
-    else if (grid[y][x] === IMPASSABLE) {
-      fill("black");
-    }
-    else if (grid[y][x] === FINISH_LINE) {
-      fill("white");
-    }
-    else if (grid[y][x] === DARK_FINISH) {
-      fill(51, 51, 51);
-    }
-    else {
-      fill(220);
-    }
+      if (grid[y][x] === KERB_RED) {
+        fill("#d62938");
+      }
+      else if (grid[y][x] === KERB_WHITE) {
+        fill("#e4dede");
+      }
+      else if (grid[y][x] === IMPASSABLE) {
+        fill("black");
+      }
+      else if (grid[y][x] === FINISH_LINE) {
+        fill("white");
+      }
+      else if (grid[y][x] === DARK_FINISH) {
+        fill(51, 51, 51);
+      }
+      else {
+        fill(220);
+      }
 
-    if (gameState === "editing") {
-      stroke(160);
-      strokeWeight(0.5);
-    } else {
-      noStroke();
-    }
+      if (gameState === "editing") {
+        stroke(160);
+        strokeWeight(0.5);
+      } 
+      else {
+        noStroke();
+      }
 
-    square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+      square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+    }
   }
-}
 
   pop();
 
@@ -487,13 +488,18 @@ function selectPalette(circuitName) {
   selectedColor = currentPalette.track;
 }
 
+
+
 function paintKerbCell() {
   let x = Math.floor((mouseX - circuitOffsetX) / circuitScale / CELL_SIZE);
   let y = Math.floor((mouseY - circuitOffsetY) / circuitScale / CELL_SIZE);
 
   if (x < 0 || x >= cols || y < 0 || y >= rows) return;
 
-  // First cell
+  // Don't repaint the same cell
+  if (x === lastKerbX && y === lastKerbY) return;
+
+  // First cell of the stroke
   if (lastKerbX === -1) {
     paintAlternatingKerb(x, y);
   }
@@ -514,14 +520,27 @@ function paintKerbCell() {
     while (x0 !== x || y0 !== y) {
       let e2 = 2 * error;
 
+      let oldX = x0;
+      let oldY = y0;
+
+      let movedX = false;
+      let movedY = false;
+
       if (e2 >= dy) {
         error += dy;
         x0 += sx;
+        movedX = true;
       }
 
       if (e2 <= dx) {
         error += dx;
         y0 += sy;
+        movedY = true;
+      }
+
+      // Fill the extra cell on diagonal movements
+      if (movedX && movedY) {
+        paintAlternatingKerb(x0, oldY);
       }
 
       paintAlternatingKerb(x0, y0);
@@ -533,14 +552,18 @@ function paintKerbCell() {
 }
 
 
+
 // Paint one alternating red/white tile
 function paintAlternatingKerb(x, y) {
-  if (x < 0 || x >= cols || y < 0 || y >= rows) return;
+  if (x < 0 || x >= cols || y < 0 || y >= rows) {
+    return;
+  }
 
   if (kerbStripe === 0) {
     grid[y][x] = KERB_RED;
     kerbStripe = 1;
-  } else {
+  } 
+  else {
     grid[y][x] = KERB_WHITE;
     kerbStripe = 0;
   }
@@ -708,7 +731,8 @@ function mousePressed() {
   else if (gameState === "editing") {
     if (kerbPaintMode) {
       paintKerbCell();
-    } else {
+    } 
+    else {
       paintCell();
     }
   }
@@ -718,7 +742,9 @@ function mouseDragged() {
   if (gameState === "editing") {
     if (kerbPaintMode) {
       paintKerbCell();
-    } else {
+    } 
+    
+    else {
       paintCell();
     }
   }
@@ -735,7 +761,7 @@ function keyPressed() {
     }
   }
 
-  if (key === "k" || key === "K") {
+  if ((key === "k" || key === "K") && !kerbPaintMode) {
     kerbPaintMode = true;
     kerbStripe = 0;
     lastKerbX = -1;
@@ -789,9 +815,17 @@ function keyReleased() {
   if (key === "f" || key === "F") {
     finishPaintMode = false;
   }
+
   if (key === "k" || key === "K") {
-  kerbPaintMode = false;
+    kerbPaintMode = false;
+    lastKerbX = -1;
+    lastKerbY = -1;
   }
+}
+
+function mouseReleased() {
+  lastKerbX = -1;
+  lastKerbY = -1;
 }
 
 // Circuit adjustment
@@ -834,8 +868,8 @@ function centerCircuit() {
     return;
   }
 
-  let centerX = ((minX + maxX + 1) / 2) * CELL_SIZE;
-  let centerY = ((minY + maxY + 1) / 2) * CELL_SIZE;
+  let centerX = (minX + maxX + 1) / 2 * CELL_SIZE;
+  let centerY = (minY + maxY + 1) / 2 * CELL_SIZE;
 
   circuitOffsetX = width / 2 - centerX * circuitScale + circuitShiftX;
   circuitOffsetY = height / 2 - centerY * circuitScale + circuitShiftY;
