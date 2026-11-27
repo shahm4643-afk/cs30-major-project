@@ -6,6 +6,24 @@ const FINISH_LINE = 2;
 const CELL_SIZE = 10;
 const DARK_FINISH = 3;
 
+// Color combos
+
+const CIRCUIT_COLORS = {
+  // Universal Circuit Colors
+  kerbRed: "#E32636",
+  track: "#333333",
+  grass: "#477A45",
+  white: "#ffffffe3",
+  water: "#25BFE0",
+  
+  // YAS MARINA COLORS
+  yasRunoff: "#0bc0b1",
+  yasBuildings: "#A6A6A6",
+  yasBuildingsDark: "#707070",
+  
+};
+
+
 let rows, cols, grid, yasMarina, deMonaco;
 let gameState = "home";
 let finishPaintMode = false;
@@ -29,8 +47,8 @@ let restartX, restartY;
 // Starting positions (grid coordinates)
 let rbFinishLine = { x: 124, y: 50 };
 let sfFinishLine = { x: 124, y: 53 };
-let monacoRbStart = { x: 132, y: 375 }; // TODO: fill in with an open road tile on Monaco
-let monacoSfStart = { x: 0, y: 0 }; // TODO: fill in with an open road tile on Monaco
+let monacoRbStart = { x: 132, y: 375 }; 
+let monacoSfStart = { x: 132, y: 377 }; 
 
 // Cars' images and Physics
 let redbullImage;
@@ -65,9 +83,8 @@ let circuitShiftY = 0;
 let yasScale = 1.5;
 let monacoScale = 1.0;
 
-// TEMPORARY: shows the grid cell under the mouse so you can find start coordinates.
-// Set to false when you are done.
-let showCoords = true;
+
+let showCoords = false;
 
 // Cars' Lap time
 let rbStartTime = 0;
