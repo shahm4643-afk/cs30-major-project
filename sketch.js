@@ -6,21 +6,33 @@ const FINISH_LINE = 2;
 const CELL_SIZE = 10;
 const DARK_FINISH = 3;
 
+// Kerb painting
+const KERB_RED = 4;
+const KERB_WHITE = 5;
+
 // Color combos
 
 const CIRCUIT_COLORS = {
-  // Universal Circuit Colors
-  kerbRed: "#E32636",
-  track: "#333333",
-  grass: "#477A45",
-  white: "#ffffffe3",
-  water: "#25BFE0",
-  
-  // YAS MARINA COLORS
-  yasRunoff: "#0bc0b1",
-  yasBuildings: "#A6A6A6",
-  yasBuildingsDark: "#707070",
-  
+  yasMarina: {
+    track: "#333333",
+    grass: "#477A45",
+    kerbRed: "#E32636",
+    white: "#ffffffe3",
+    water: "#25BFE0",
+    runoff: "#0bc0b1",
+    buildings: "#A6A6A6",
+    buildingsDark: "#707070",
+  },
+
+  monaco: {
+    track: "#333333",
+    grass: "#477A45",
+    kerbRed: "#E32636",
+    white: "#ffffffe3",
+    water: "#25BFE0",
+    buildings: "#808080",
+  },
+
 };
 
 
@@ -83,7 +95,6 @@ let circuitShiftY = 0;
 let yasScale = 1.5;
 let monacoScale = 1.0;
 
-
 let showCoords = false;
 
 // Cars' Lap time
@@ -93,6 +104,12 @@ let rbStarted = false;
 let sfStarted = false;
 let rbTime = 0;
 let sfTime = 0;
+
+// Painting
+let kerbPaintMode = false;
+let lastKerbX = -1;
+let lastKerbY = -1;
+let kerbStripe = 0;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -175,8 +192,17 @@ function draw() {
 }
 
 // Main circuit logic
-function startCircuit(circuit, rbLine, sfLine, startScale) {
+function startCircuit(circuit, rbLine, sfLine, startScale, openEditor = false) {
   currentCircuit = circuit;
+
+    if (circuit === yasMarina) {
+    selectPalette("yasMarina");
+  }
+
+  else if (circuit === deMonaco) {
+    selectPalette("monaco");
+  }
+
   currentRbLine = rbLine;
   currentSfLine = sfLine;
   currentScale = startScale;
@@ -204,9 +230,9 @@ if (circuit === deMonaco) {
   }
 }
 
-// Update dimensions
-rows = grid.length;
-cols = grid[0].length;
+  // Update dimensions
+  rows = grid.length;
+  cols = grid[0].length;
 
   // Red Bull starting position
   rbCarX = rbLine.x * CELL_SIZE;
@@ -234,7 +260,7 @@ cols = grid[0].length;
   // Centre after expanding the grid
   centerCircuit();
 
-  gameState = "playing";
+  gameState = openEditor ? "editing" : "playing";
 }
 
 function displayGrid() {
@@ -248,7 +274,13 @@ function displayGrid() {
 for (let y = 0; y < rows; y++) {
   for (let x = 0; x < cols; x++) {
 
-    if (grid[y][x] === IMPASSABLE) {
+    if (grid[y][x] === KERB_RED) {
+      fill("#E32636");
+    }
+    else if (grid[y][x] === KERB_WHITE) {
+      fill("white");
+    }
+    else if (grid[y][x] === IMPASSABLE) {
       fill("black");
     }
     else if (grid[y][x] === FINISH_LINE) {
@@ -447,6 +479,74 @@ function checkCollision(carX, carY) {
   return "racing";
 }
 
+let currentPalette;
+let selectedColor;
+
+function selectPalette(circuitName) {
+  currentPalette = CIRCUIT_COLORS[circuitName];
+  selectedColor = currentPalette.track;
+}
+
+function paintKerbCell() {
+  let x = Math.floor((mouseX - circuitOffsetX) / circuitScale / CELL_SIZE);
+  let y = Math.floor((mouseY - circuitOffsetY) / circuitScale / CELL_SIZE);
+
+  if (x < 0 || x >= cols || y < 0 || y >= rows) return;
+
+  // First cell
+  if (lastKerbX === -1) {
+    paintAlternatingKerb(x, y);
+  }
+
+  // Connect the previous cell to the current cell
+  else {
+    let x0 = lastKerbX;
+    let y0 = lastKerbY;
+
+    let dx = Math.abs(x - x0);
+    let sx = x0 < x ? 1 : -1;
+
+    let dy = -Math.abs(y - y0);
+    let sy = y0 < y ? 1 : -1;
+
+    let error = dx + dy;
+
+    while (x0 !== x || y0 !== y) {
+      let e2 = 2 * error;
+
+      if (e2 >= dy) {
+        error += dy;
+        x0 += sx;
+      }
+
+      if (e2 <= dx) {
+        error += dx;
+        y0 += sy;
+      }
+
+      paintAlternatingKerb(x0, y0);
+    }
+  }
+
+  lastKerbX = x;
+  lastKerbY = y;
+}
+
+
+// Paint one alternating red/white tile
+function paintAlternatingKerb(x, y) {
+  if (x < 0 || x >= cols || y < 0 || y >= rows) return;
+
+  if (kerbStripe === 0) {
+    grid[y][x] = KERB_RED;
+    kerbStripe = 1;
+  } else {
+    grid[y][x] = KERB_WHITE;
+    kerbStripe = 0;
+  }
+}
+
+
 // Generating the grid and templates
 function generateEmptyGrid(gridCols, gridRows) {
   let newGrid = [];
@@ -469,6 +569,7 @@ function restartCircuit() {
 }
 
 function startTemplate() {
+  currentCircuit = null;
   rows = Math.floor(height / CELL_SIZE);
   cols = Math.floor(width / CELL_SIZE);
   grid = generateEmptyGrid(cols, rows);
@@ -585,7 +686,7 @@ function mousePressed() {
     if (isMouseOver(buttonX, buttonY, buttonW, buttonH)) {
       circuitShiftX = 0;
       circuitShiftY = 0;
-      startCircuit(yasMarina, rbFinishLine, sfFinishLine, yasScale);
+      startCircuit(yasMarina, rbFinishLine, sfFinishLine, yasScale, true);
       // gameState = "editing";
     }
 
@@ -598,24 +699,55 @@ function mousePressed() {
     else if (isMouseOver(buttonX, buttonY + 200, buttonW, buttonH)) {
       circuitShiftX = 0;
       circuitShiftY = 52;
-      startCircuit(deMonaco, monacoRbStart, monacoSfStart, monacoScale);
+      startCircuit(deMonaco, monacoRbStart, monacoSfStart, monacoScale, true);
       // gameState = "editing";
     }
   }
 
   // Editing
   else if (gameState === "editing") {
-    paintCell();
+    if (kerbPaintMode) {
+      paintKerbCell();
+    } else {
+      paintCell();
+    }
   }
 }
 
 function mouseDragged() {
   if (gameState === "editing") {
-    paintCell();
+    if (kerbPaintMode) {
+      paintKerbCell();
+    } else {
+      paintCell();
+    }
   }
 }
 
 function keyPressed() {
+
+  if (currentPalette) {
+    const colors = Object.values(currentPalette);
+    const index = Number(key) - 1;
+
+    if (index >= 0 && index < colors.length && index < 9) {
+      selectedColor = colors[index];
+    }
+  }
+
+  if (key === "k" || key === "K") {
+    kerbPaintMode = true;
+    kerbStripe = 0;
+    lastKerbX = -1;
+    lastKerbY = -1;
+  }
+  // Start racing after editing
+  if ((key === "p" || key === "P") && gameState === "editing" && currentCircuit) {
+    kerbPaintMode = false;
+    finishPaintMode = false;
+    gameState = "playing";
+  }
+
   // Finish line painting
   if (key === "f" || key === "F") {
     finishPaintMode = true;
@@ -656,6 +788,9 @@ function keyPressed() {
 function keyReleased() {
   if (key === "f" || key === "F") {
     finishPaintMode = false;
+  }
+  if (key === "k" || key === "K") {
+  kerbPaintMode = false;
   }
 }
 
