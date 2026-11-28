@@ -110,6 +110,7 @@ let kerbPaintMode = false;
 let lastKerbX = -1;
 let lastKerbY = -1;
 let kerbStripe = 0;
+let previousGrid = null;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -118,7 +119,7 @@ async function setup() {
   cols = Math.floor(width / CELL_SIZE);
   grid = generateEmptyGrid(cols, rows);
 
-  yasMarina = await loadJSON("yas_marina.json");
+  yasMarina = await loadJSON("yas_2.json");
   deMonaco = await loadJSON("monaco.json");
 
   redbullImage = await loadImage("redbull.png");
@@ -137,7 +138,7 @@ async function setup() {
 }
 
 function draw() {
-  background(220);
+  background(150);
 
   if (gameState === "editing") {
     displayGrid();
@@ -290,9 +291,13 @@ function displayGrid() {
         fill(51, 51, 51);
       }
       else {
-        fill(220);
+        if (currentCircuit === yasMarina && gameState === "editing") {
+          fill("#a1aea1"); // Yas Marina background
+        } 
+        else {
+          fill(220);
+        }
       }
-
       if (gameState === "editing") {
         stroke(160);
         strokeWeight(0.5);
@@ -699,18 +704,20 @@ function mousePressed() {
   }
 
   // Restart button
-  if ((gameState === "playing" || gameState === "finished" || gameState === "won") && isMouseOver(restartX, restartY, restartW, restartH)) {
+  if ((gameState === "playing" || gameState === "finished" || gameState === "won") &&
+    isMouseOver(restartX, restartY, restartW, restartH)) {
+
     restartCircuit();
     return;
   }
 
   // Menu
   if (gameState === "home") {
+
     if (isMouseOver(buttonX, buttonY, buttonW, buttonH)) {
       circuitShiftX = 0;
       circuitShiftY = 0;
       startCircuit(yasMarina, rbFinishLine, sfFinishLine, yasScale, true);
-      // gameState = "editing";
     }
 
     else if (isMouseOver(buttonX, buttonY + 100, buttonW, buttonH)) {
@@ -723,12 +730,15 @@ function mousePressed() {
       circuitShiftX = 0;
       circuitShiftY = 52;
       startCircuit(deMonaco, monacoRbStart, monacoSfStart, monacoScale, true);
-      // gameState = "editing";
     }
   }
 
   // Editing
   else if (gameState === "editing") {
+
+    // Save the grid before painting
+    previousGrid = grid.map(row => [...row]);
+
     if (kerbPaintMode) {
       paintKerbCell();
     } 
@@ -750,7 +760,7 @@ function mouseDragged() {
   }
 }
 
-function keyPressed() {
+function keyPressed(event) {
 
   if (currentPalette) {
     const colors = Object.values(currentPalette);
@@ -767,6 +777,19 @@ function keyPressed() {
     lastKerbX = -1;
     lastKerbY = -1;
   }
+
+  // Undo (Cmd + Z on Mac, Ctrl + Z on Windows)
+  if (
+    (key === "z" || key === "Z") &&
+    (event.metaKey || event.ctrlKey) &&
+    gameState === "editing" &&
+    previousGrid !== null
+  ) {
+    grid = previousGrid;
+    previousGrid = null;
+    return false;
+  }
+
   // Start racing after editing
   if ((key === "p" || key === "P") && gameState === "editing" && currentCircuit) {
     kerbPaintMode = false;
@@ -777,11 +800,6 @@ function keyPressed() {
   // Finish line painting
   if (key === "f" || key === "F") {
     finishPaintMode = true;
-  }
-
-  // Home
-  if (key === "e" || key === "E") {
-    gameState = "home";
   }
 
   // Restart (only while a race is on screen)
